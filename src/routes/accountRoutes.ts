@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { createAccount } from "../controllers/accountController";
+import { createAccount, deposit } from "../controllers/accountController";
 
 const router = Router();
 
 router.post("/accounts", createAccount);
+router.post("/accounts/deposit", deposit);
 
 export default router;
