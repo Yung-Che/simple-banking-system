@@ -8,9 +8,9 @@ import {
 
 const router = Router();
 
-router.post("/accounts", createAccount);
-router.post("/accounts/deposit", deposit);
-router.post("/accounts/withdraw", withdraw);
-router.post("/accounts/transfer", transfer);
+router.post("/", createAccount);
+router.post("/deposit", deposit);
+router.post("/withdraw", withdraw);
+router.post("/transfer", transfer);
 
 export default router;
