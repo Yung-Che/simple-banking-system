@@ -1,7 +1,11 @@
 import { Account } from "../models/account";
+import { TransactionLog } from "../models/transactionLog";
 
 // 暫存帳戶資訊
 const accounts: Account[] = [];
+
+// 暫存交易日誌資訊
+const transactionLogs: TransactionLog[] = [];
 
 /**
  * 創建帳戶
@@ -13,13 +17,16 @@ export const createAccountService = (
   name: string,
   balance: number
 ): Account => {
+  // 餘額不為負數
+  if (balance < 0) {
+    throw new Error("Account balance cannot be negative");
+  }
+
   // 新增一個帳戶
   const newAccount: Account = { id: Date.now().toString(), name, balance };
 
-  // 存在 local 陣列
+  // 存至 local 陣列
   accounts.push(newAccount);
-
-  console.log("accounts", accounts);
 
   return newAccount;
 };
@@ -34,10 +41,10 @@ export const depositService = (
   id: string,
   amount: number
 ): Account | undefined => {
-  // 尋找 id 是否存在
+  // 透過 id  尋找帳戶是否存在
   const account = accounts.find((account) => account.id === id);
 
-  // 若是則增加帳戶金額
+  // 若是，則增加帳戶金額
   if (account) {
     account.balance += amount;
     return account;
@@ -55,6 +62,7 @@ export const withdrawService = (
   id: string,
   amount: number
 ): Account | undefined => {
+  // 透過 id  尋找帳戶是否存在
   const account = accounts.find((account) => account.id === id);
 
   if (account && account.balance >= amount) {
@@ -62,4 +70,66 @@ export const withdrawService = (
     return account;
   }
   return undefined;
+};
+
+/**
+ * 轉帳
+ * @param fromId 轉出帳戶 id
+ * @param toId 轉入帳戶 id
+ * @param amount 金額
+ * @returns
+ */
+export const transferService = (
+  fromId: string,
+  toId: string,
+  amount: number
+): boolean => {
+  // 透過 id  尋找帳戶是否存在
+  const fromAccount = accounts.find((account) => account.id === fromId);
+  const toAccount = accounts.find((account) => account.id === toId);
+
+  // 檢查資訊是否正確
+  if (!fromAccount || !toAccount || fromAccount.balance < amount) {
+    return false;
+  }
+
+  // 沒有串接資料庫，以下模擬 transaction
+
+  // 宣告變數儲存原始餘額
+  const originalFromBalance = fromAccount.balance;
+  const originalToBalance = toAccount.balance;
+
+  try {
+    // 執行操作
+    fromAccount.balance -= amount;
+    toAccount.balance += amount;
+
+    // 轉帳成功後，紀錄交易日誌
+    logTransaction(fromId, toId, amount);
+
+    return true;
+  } catch (error) {
+    // 若出現錯誤，回到原始狀態
+    fromAccount.balance = originalFromBalance;
+    toAccount.balance = originalToBalance;
+
+    return false;
+  }
+};
+
+/**
+ * 交易日誌
+ * @param fromId 轉出帳戶 id
+ * @param toId 轉入帳戶 id
+ * @param amount 金額
+ */
+const logTransaction = (fromId: string, toId: string, amount: number): void => {
+  const logEntry: TransactionLog = {
+    timestamp: new Date(),
+    fromAccountId: fromId,
+    toAccountId: toId,
+    amount: amount,
+  };
+  transactionLogs.push(logEntry);
+  console.log("Transaction Log:", logEntry);
 };
