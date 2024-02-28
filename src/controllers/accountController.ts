@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import {
   createAccountService,
   depositService,
+  withdrawService,
 } from "../services/accountService";
 
 /**
@@ -32,6 +33,25 @@ export const deposit = (req: Request, res: Response) => {
       res.status(200).send(account);
     } else {
       res.status(404).send("Account not found");
+    }
+  } catch (error) {
+    res.status(500).send((error as Error).message);
+  }
+};
+
+/**
+ * 提款
+ * @param req
+ * @param res
+ */
+export const withdraw = (req: Request, res: Response) => {
+  try {
+    const { id, amount } = req.body;
+    const account = withdrawService(id, amount);
+    if (account) {
+      res.status(200).send(account);
+    } else {
+      res.status(400).send("Insufficient funds or account not found");
     }
   } catch (error) {
     res.status(500).send((error as Error).message);

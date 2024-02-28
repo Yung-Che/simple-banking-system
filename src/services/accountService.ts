@@ -19,13 +19,15 @@ export const createAccountService = (
   // 存在 local 陣列
   accounts.push(newAccount);
 
+  console.log("accounts", accounts);
+
   return newAccount;
 };
 
 /**
  * 存款
  * @param id 帳戶 id
- * @param amount 金額
+ * @param amount 存款金額
  * @returns
  */
 export const depositService = (
@@ -38,6 +40,25 @@ export const depositService = (
   // 若是則增加帳戶金額
   if (account) {
     account.balance += amount;
+    return account;
+  }
+  return undefined;
+};
+
+/**
+ * 提款
+ * @param id 帳戶 id
+ * @param amount 提款金額
+ * @returns
+ */
+export const withdrawService = (
+  id: string,
+  amount: number
+): Account | undefined => {
+  const account = accounts.find((account) => account.id === id);
+
+  if (account && account.balance >= amount) {
+    account.balance -= amount;
     return account;
   }
   return undefined;
