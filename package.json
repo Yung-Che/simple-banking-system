@@ -6,7 +6,7 @@
   "scripts": {
     "start": "tsc && node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "nodemon --config nodemon.json app.ts"
+    "serve": "nodemon --config nodemon.json src/app.ts"
   },
   "keywords": [],
   "author": "",
