@@ -13,9 +13,9 @@ const transactionLogs: TransactionLog[] = [];
  * @param accountId 帳戶 id
  * @returns Account
  */
-export const getAccountByIdService = (
+export const getAccountByIdService = async (
   accountId: string
-): Account | undefined => {
+): Promise<Account | undefined> => {
   const account = accounts.find((account) => account.id === accountId);
 
   return account;
@@ -27,10 +27,10 @@ export const getAccountByIdService = (
  * @param balance 餘額
  * @returns Account
  */
-export const createAccountService = (
+export const createAccountService = async (
   name: string,
   balance: number
-): Account => {
+): Promise<Account> => {
   // 餘額不為負數
   if (balance < 0) {
     throw new Error("Account balance cannot be negative");
@@ -51,10 +51,10 @@ export const createAccountService = (
  * @param amount 存款金額
  * @returns Account | undefined
  */
-export const depositService = (
+export const depositService = async (
   id: string,
   amount: number
-): Account | undefined => {
+): Promise<Account | undefined> => {
   // 透過 id  尋找帳戶是否存在
   const account = accounts.find((account) => account.id === id);
 
@@ -72,10 +72,10 @@ export const depositService = (
  * @param amount 提款金額
  * @returns Account | undefined
  */
-export const withdrawService = (
+export const withdrawService = async (
   id: string,
   amount: number
-): Account | undefined => {
+): Promise<Account | undefined> => {
   // 透過 id  尋找帳戶是否存在
   const account = accounts.find((account) => account.id === id);
 
@@ -93,11 +93,11 @@ export const withdrawService = (
  * @param amount 金額
  * @returns boolean
  */
-export const transferService = (
+export const transferService = async (
   fromId: string,
   toId: string,
   amount: number
-): boolean => {
+): Promise<boolean> => {
   // 透過 id  尋找帳戶是否存在
   const fromAccount = accounts.find((account) => account.id === fromId);
   const toAccount = accounts.find((account) => account.id === toId);
@@ -119,7 +119,7 @@ export const transferService = (
     toAccount.balance += amount;
 
     // 轉帳成功後，紀錄交易日誌
-    logTransaction(fromId, toId, amount);
+    await logTransaction(fromId, toId, amount);
 
     return true;
   } catch (error) {
@@ -137,7 +137,11 @@ export const transferService = (
  * @param toId 轉入帳戶 id
  * @param amount 金額
  */
-const logTransaction = (fromId: string, toId: string, amount: number): void => {
+const logTransaction = async (
+  fromId: string,
+  toId: string,
+  amount: number
+): Promise<void> => {
   const logEntry: TransactionLog = {
     timestamp: new Date(),
     fromAccountId: fromId,

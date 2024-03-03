@@ -12,11 +12,11 @@ import {
  * @param req
  * @param res
  */
-export const getAccount = (req: Request, res: Response) => {
+export const getAccount = async (req: Request, res: Response) => {
   try {
     const { accountId } = req.params;
 
-    const account = getAccountByIdService(accountId.toString());
+    const account = await getAccountByIdService(accountId.toString());
 
     if (account) {
       res.json(account);
@@ -33,10 +33,10 @@ export const getAccount = (req: Request, res: Response) => {
  * @param req
  * @param res
  */
-export const createAccount = (req: Request, res: Response) => {
+export const createAccount = async (req: Request, res: Response) => {
   try {
     const { name, balance } = req.body;
-    const newAccount = createAccountService(name, balance);
+    const newAccount = await createAccountService(name, balance);
     res.status(201).send(newAccount);
   } catch (error) {
     res.status(400).send((error as Error).message);
@@ -48,10 +48,10 @@ export const createAccount = (req: Request, res: Response) => {
  * @param req
  * @param res
  */
-export const deposit = (req: Request, res: Response) => {
+export const deposit = async (req: Request, res: Response) => {
   try {
     const { id, amount } = req.body;
-    const account = depositService(id, amount);
+    const account = await depositService(id, amount);
     if (account) {
       res.status(200).send(account);
     } else {
@@ -67,10 +67,10 @@ export const deposit = (req: Request, res: Response) => {
  * @param req
  * @param res
  */
-export const withdraw = (req: Request, res: Response) => {
+export const withdraw = async (req: Request, res: Response) => {
   try {
     const { id, amount } = req.body;
-    const account = withdrawService(id, amount);
+    const account = await withdrawService(id, amount);
     if (account) {
       res.status(200).send(account);
     } else {
@@ -86,10 +86,12 @@ export const withdraw = (req: Request, res: Response) => {
  * @param req
  * @param res
  */
-export const transfer = (req: Request, res: Response) => {
+export const transfer = async (req: Request, res: Response) => {
   try {
     const { fromId, toId, amount } = req.body;
-    if (transferService(fromId, toId, amount)) {
+    const success = await transferService(fromId, toId, amount);
+
+    if (success) {
       res.status(200).send("Transfer successful");
     } else {
       res
