@@ -29,6 +29,14 @@ app.get("/", (req, res) => {
 
 app.use("/api/accounts", accountRoutes);
 
-app.listen(port, () => {
-  console.log(`Server ready at http://localhost:${port}`);
-});
+export { app };
+
+export const startServer = () => {
+  return app.listen(port, () => {
+    console.log(`Server ready at http://localhost:${port}`);
+  });
+};
+
+if (process.env.NODE_ENV !== "test") {
+  startServer();
+}
