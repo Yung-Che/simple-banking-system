@@ -1,4 +1,8 @@
-import { createAccount, deposit } from "../../controllers/accountController";
+import {
+  createAccount,
+  deposit,
+  withdraw,
+} from "../../controllers/accountController";
 import * as accountService from "../../services/accountService";
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
@@ -62,6 +66,24 @@ describe("deposit", () => {
     await deposit(req, res);
 
     expect(accountService.depositService).toHaveBeenCalledWith("1", 500);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(expectedAccount);
+  });
+});
+
+describe("withdraw", () => {
+  it("should withdraw money from account and return updated account", async () => {
+    const req = mockRequest({ id: "1", amount: 200 });
+    const res = mockResponse();
+    const expectedAccount = { id: "1", balance: 800 };
+
+    (accountService.withdrawService as jest.Mock).mockReturnValue(
+      expectedAccount
+    );
+
+    await withdraw(req, res);
+
+    expect(accountService.withdrawService).toHaveBeenCalledWith("1", 200);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.send).toHaveBeenCalledWith(expectedAccount);
   });

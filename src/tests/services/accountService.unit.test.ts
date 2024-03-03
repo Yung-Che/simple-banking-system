@@ -1,6 +1,7 @@
 import {
   createAccountService,
   depositService,
+  withdrawService,
 } from "../../services/accountService";
 
 describe("Account Service", () => {
@@ -22,6 +23,15 @@ describe("Account Service", () => {
       const updatedAccount = await depositService(account.id, 500);
       expect(updatedAccount).not.toBeUndefined();
       expect(updatedAccount?.balance).toEqual(1000);
+    });
+  });
+
+  describe("withdrawService", () => {
+    it("should correctly withdraw amount from account", async () => {
+      const account = await createAccountService("Withdraw Account", 1000);
+      const updatedAccount = await withdrawService(account.id, 500);
+      expect(updatedAccount).not.toBeUndefined();
+      expect(updatedAccount?.balance).toEqual(500);
     });
   });
 });
