@@ -1,4 +1,4 @@
-import { createAccount } from "../../controllers/accountController";
+import { createAccount, deposit } from "../../controllers/accountController";
 import * as accountService from "../../services/accountService";
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
@@ -46,5 +46,23 @@ describe("createAccount controller", () => {
         balance: 1000,
       })
     );
+  });
+});
+
+describe("deposit", () => {
+  it("should deposit money into account and return updated account", async () => {
+    const req = mockRequest({ id: "1", amount: 500 });
+    const res = mockResponse();
+    const expectedAccount = { id: "1", balance: 1500 };
+
+    (accountService.depositService as jest.Mock).mockReturnValue(
+      expectedAccount
+    );
+
+    await deposit(req, res);
+
+    expect(accountService.depositService).toHaveBeenCalledWith("1", 500);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(expectedAccount);
   });
 });

@@ -1,5 +1,6 @@
 import {
   createAccountService,
+  depositService,
 } from "../../services/accountService";
 
 describe("Account Service", () => {
@@ -12,6 +13,15 @@ describe("Account Service", () => {
       expect(account).toEqual(
         expect.objectContaining({ name: "New Account", balance: 500 })
       );
+    });
+  });
+
+  describe("depositService", () => {
+    it("should correctly deposit amount into account", async () => {
+      const account = await createAccountService("Deposit Account", 500);
+      const updatedAccount = await depositService(account.id, 500);
+      expect(updatedAccount).not.toBeUndefined();
+      expect(updatedAccount?.balance).toEqual(1000);
     });
   });
 });
