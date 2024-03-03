@@ -1,5 +1,6 @@
 import { Account } from "../models/account";
 import { TransactionLog } from "../models/transactionLog";
+import { v4 as uuidv4 } from "uuid";
 
 // 暫存帳戶資訊
 const accounts: Account[] = [];
@@ -36,7 +37,7 @@ export const createAccountService = (
   }
 
   // 新增一個帳戶
-  const newAccount: Account = { id: Date.now().toString(), name, balance };
+  const newAccount: Account = { id: uuidv4(), name, balance };
 
   // 存至 local 陣列
   accounts.push(newAccount);
