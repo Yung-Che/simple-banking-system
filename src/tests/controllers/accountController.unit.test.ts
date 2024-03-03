@@ -1,6 +1,7 @@
 import {
   createAccount,
   deposit,
+  transfer,
   withdraw,
 } from "../../controllers/accountController";
 import * as accountService from "../../services/accountService";
@@ -86,5 +87,20 @@ describe("withdraw", () => {
     expect(accountService.withdrawService).toHaveBeenCalledWith("1", 200);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.send).toHaveBeenCalledWith(expectedAccount);
+  });
+});
+
+describe("transfer", () => {
+  it("should transfer money between accounts and return success message", async () => {
+    const req = mockRequest({ fromId: "1", toId: "2", amount: 300 });
+    const res = mockResponse();
+
+    (accountService.transferService as jest.Mock).mockReturnValue(true);
+
+    await transfer(req, res);
+
+    expect(accountService.transferService).toHaveBeenCalledWith("1", "2", 300);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith("Transfer successful");
   });
 });

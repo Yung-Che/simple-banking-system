@@ -2,6 +2,8 @@ import {
   createAccountService,
   depositService,
   withdrawService,
+  transferService,
+  getAccountByIdService,
 } from "../../services/accountService";
 
 describe("Account Service", () => {
@@ -32,6 +34,26 @@ describe("Account Service", () => {
       const updatedAccount = await withdrawService(account.id, 500);
       expect(updatedAccount).not.toBeUndefined();
       expect(updatedAccount?.balance).toEqual(500);
+    });
+  });
+
+  describe("transferService", () => {
+    it("should correctly transfer amount between two accounts", async () => {
+      // 建立兩個帳戶做測試
+      const fromAccount = await createAccountService("From Account", 1000);
+      const toAccount = await createAccountService("To Account", 500);
+
+      // 轉帳
+      const success = await transferService(fromAccount.id, toAccount.id, 500);
+
+      // 驗證轉帳是否成功
+      expect(success).toBeTruthy();
+
+      // 查詢轉帳後的狀態
+      const updatedFromAccount = await getAccountByIdService(fromAccount.id);
+      const updatedToAccount = await getAccountByIdService(toAccount.id);
+      expect(updatedFromAccount?.balance).toEqual(500);
+      expect(updatedToAccount?.balance).toEqual(1000);
     });
   });
 });
