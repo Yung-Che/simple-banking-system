@@ -2,9 +2,31 @@ import { Request, Response } from "express";
 import {
   createAccountService,
   depositService,
+  getAccountByIdService,
   transferService,
   withdrawService,
 } from "../services/accountService";
+
+/**
+ * 取得帳戶資訊
+ * @param req
+ * @param res
+ */
+export const getAccount = (req: Request, res: Response) => {
+  try {
+    const { accountId } = req.params;
+
+    const account = getAccountByIdService(accountId.toString());
+
+    if (account) {
+      res.json(account);
+    } else {
+      res.status(404).send("Account not found");
+    }
+  } catch (error) {
+    res.status(500).send("Server error");
+  }
+};
 
 /**
  * 新增帳戶

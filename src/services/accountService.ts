@@ -8,10 +8,23 @@ const accounts: Account[] = [];
 const transactionLogs: TransactionLog[] = [];
 
 /**
+ * 取得帳戶資訊
+ * @param accountId 帳戶 id
+ * @returns Account
+ */
+export const getAccountByIdService = (
+  accountId: string
+): Account | undefined => {
+  const account = accounts.find((account) => account.id === accountId);
+
+  return account;
+};
+
+/**
  * 創建帳戶
  * @param name 帳戶姓名
  * @param balance 餘額
- * @returns
+ * @returns Account
  */
 export const createAccountService = (
   name: string,
@@ -35,7 +48,7 @@ export const createAccountService = (
  * 存款
  * @param id 帳戶 id
  * @param amount 存款金額
- * @returns
+ * @returns Account | undefined
  */
 export const depositService = (
   id: string,
@@ -56,7 +69,7 @@ export const depositService = (
  * 提款
  * @param id 帳戶 id
  * @param amount 提款金額
- * @returns
+ * @returns Account | undefined
  */
 export const withdrawService = (
   id: string,
@@ -77,7 +90,7 @@ export const withdrawService = (
  * @param fromId 轉出帳戶 id
  * @param toId 轉入帳戶 id
  * @param amount 金額
- * @returns
+ * @returns boolean
  */
 export const transferService = (
   fromId: string,
