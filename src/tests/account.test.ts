@@ -36,4 +36,14 @@ describe("Account API", () => {
     expect(res.statusCode).toEqual(200);
     expect(res.body.balance).toEqual(1500);
   });
+
+  it("should withdraw money from an account", async () => {
+    const withdrawAmount = 200;
+    const res = await request(app).post(`/api/accounts/withdraw`).send({
+      id: createdAccountId,
+      amount: withdrawAmount,
+    });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.balance).toEqual(1300);
+  });
 });
